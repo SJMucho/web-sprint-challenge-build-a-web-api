@@ -3,6 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const Actions = require("./actions-model");
+// const { checkActionId } = require("./actions-middleware");
 
 router.get("/api/actions", (req, res) => {
   Actions.get(req.query)
