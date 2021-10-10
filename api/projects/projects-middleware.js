@@ -1,18 +1,17 @@
 // add middlewares here related to projects
-const checkProjectId = async (req,res,next)=>{
-  try{
-    const {id} = req.params
-    const project = await Projects.findById(id)
-    if(!project){
-      res.status(404).json({message: `No project: ${id}`})
-    }else{
-      req.project = project
-      next()
-    }
-  }
-  catch(err){
-    res.status(500).json({message:`Error: ${err.message}`})
-  }  
-}
+const Projects = require("./projects-model");
 
-// module.exports = checkProjectId;
+const checkProjectId = async (req, res, next) => {
+  const { id } = req.params;
+  const project = await Projects.get(id);
+  if (!project) {
+    res.status(404).json("No project with that ID exists");
+  } else {
+    req.project = project;
+    next();
+  }
+};
+
+module.exports = {
+  checkProjectId,
+};

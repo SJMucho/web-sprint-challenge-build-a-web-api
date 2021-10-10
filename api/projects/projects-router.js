@@ -2,20 +2,21 @@
 const express = require("express");
 const router = express.Router();
 const Projects = require("./projects-model");
+const { checkProjectId } = require("./projects-middleware");
 
 router.get("/projects", (req, res) => {
-  Projects.get(req.query)
+  Projects.get(req.params)
     .then((projects) => {
       res.status(200).json(projects);
     })
     .catch((err) => {
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ message: "Could not find projects" });
     });
 });
 
-router.get("/projects/:id", (req, res) => {
+router.get("/projects/:id", checkProjectId, (req, res) => {
   Projects.get(req.params.id)
-    .then((projects) => {
+    .then((project) => {
       if (project) {
         res.status(200).json(project);
       } else {
@@ -41,7 +42,7 @@ router.post("/projects", (req, res) => {
     });
 });
 
-router.put("/projects/:id", (req, res) => {
+router.put("/projects/:id", checkProjectId, (req, res) => {
   const changes = req.body;
   Projects.update(req.params.id, changes)
     .then((project) => {
@@ -56,7 +57,7 @@ router.put("/projects/:id", (req, res) => {
     });
 });
 
-router.delete("/projects/:id", (req, res) => {
+router.delete("/projects/:id", checkProjectId, (req, res) => {
   Projects.remove(req.params.id)
     .then((count) => {
       if (count > 0) {
